@@ -25,9 +25,6 @@ func main() {
 	if err := chromedp.Run(ctx, fixedSizeScreenshot(`http://solar.local/solar`, &buf)); err != nil {
 		log.Fatal(err)
 	}
-	// if err := ioutil.WriteFile("screenshot.png", buf, 0644); err != nil {
-	// 	log.Fatal(err)
-	// }
 	// Convert from png to bmp
 	reader := bytes.NewReader(buf)
 	image, err := png.Decode(reader)
