@@ -9,6 +9,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/chromedp/cdproto/emulation"
@@ -46,6 +47,13 @@ func main() {
 		log.Fatal(err)
 	}
 	file.Close()
+
+	// Now run the external command to display the image on the eink screen
+	cmd := exec.Command("../IT8951/IT8951", "0", "0", "screenshot.bmp")
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func fixedSizeScreenshot(urlstr string, res *[]byte) chromedp.Tasks {
