@@ -24,7 +24,7 @@ func main() {
 
 	var buf []byte
 	// Capture screenshot of a page at a particular browser size
-	if err := chromedp.Run(ctx, fixedSizeScreenshot(`https://www.nytimes.com/`, &buf)); err != nil {
+	if err := chromedp.Run(ctx, fixedSizeScreenshot(`http://solar.local/solar`, &buf)); err != nil {
 		log.Fatal(err)
 	}
 	// if err := ioutil.WriteFile("screenshot.png", buf, 0644); err != nil {
