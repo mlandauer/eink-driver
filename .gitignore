@@ -9,5 +9,5 @@ config.status
 stamp-h1
 .deps
 web/main
-IT8951
+IT8951/IT8951
 web/screenshot.bmp
