@@ -61,8 +61,12 @@ func main() {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
-	err := screenshotAndDisplay(ctx, url)
-	if err != nil {
-		log.Fatal(err)
+	for {
+		err := screenshotAndDisplay(ctx, url)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("Sleeping for thirty seconds...")
+		time.Sleep(30 * time.Second)
 	}
 }
