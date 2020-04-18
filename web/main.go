@@ -22,7 +22,10 @@ func main() {
 
 	var buf []byte
 	// Capture screenshot of a page at a particular browser size
-	if err := chromedp.Run(ctx, fixedSizeScreenshot(`http://solar.local/solar`, &buf)); err != nil {
+	// Note we can't use multicast DNS to use the nice name solar.local because
+	// it doesn't work inside a docker container. So, using a hardcoded IP for the time
+	// being. This IP at least is made to be static on the dhcp server (router)
+	if err := chromedp.Run(ctx, fixedSizeScreenshot(`http://192.168.5.10/solar`, &buf)); err != nil {
 		log.Fatal(err)
 	}
 	// Convert from png to bmp
@@ -43,7 +46,7 @@ func main() {
 	file.Close()
 
 	// Now run the external command to display the image on the eink screen
-	cmd := exec.Command("../IT8951/IT8951", "0", "0", "screenshot.bmp")
+	cmd := exec.Command("IT8951/IT8951", "0", "0", "screenshot.bmp")
 	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
