@@ -22,4 +22,5 @@ RUN cd web; /usr/local/go/bin/go mod download
 COPY web/main.go web/
 RUN cd web; /usr/local/go/bin/go build main.go
 
+ENV URL http://192.168.5.10/solar
 CMD ["web/main"]
