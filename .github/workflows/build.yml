@@ -29,7 +29,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm/v7 \
-            -t mlandauer/home-dashboard:$GITHUB_SHA \
+            -t mlandauer/eink-driver:$GITHUB_SHA \
             --push \
             .
       - name: Deploy
