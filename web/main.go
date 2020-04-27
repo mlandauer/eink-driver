@@ -5,8 +5,11 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"image/png"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"time"
@@ -16,6 +19,18 @@ import (
 )
 
 func screenshotAndDisplay(ctx context.Context, url string) error {
+	// First for debugging purposes get the first bit of text from the URL
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", body)
+
 	var buf []byte
 	// Capture screenshot of a page at a particular browser size
 	// Note we can't use multicast DNS to use the nice name solar.local because
