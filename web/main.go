@@ -65,7 +65,8 @@ func fixedSizeScreenshot(urlstr string, res *[]byte) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.Navigate(urlstr),
 		chromedp.EmulateViewport(800, 600),
-		chromedp.Sleep(1 * time.Second),
+		// Hacky hack - wait for two seconds for the animation to finish
+		chromedp.Sleep(2 * time.Second),
 		chromedp.CaptureScreenshot(res),
 	}
 }
