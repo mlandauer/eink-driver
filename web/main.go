@@ -36,7 +36,6 @@ func screenshotAndDisplay(ctx context.Context, url string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s", body)
 
 	var buf []byte
 	// Capture screenshot of a page at a particular browser size
