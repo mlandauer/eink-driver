@@ -31,7 +31,7 @@ func screenshotAndDisplay(ctx context.Context, url string) error {
 	if err != nil {
 		return err
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	_, err = ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
 		return err
