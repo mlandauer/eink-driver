@@ -18,6 +18,13 @@ import (
 	"golang.org/x/image/bmp"
 )
 
+// path is relative to the eink-driver directory. Must be
+// an 800x600 bmp image
+func displayBmp(path string) error {
+	cmd := exec.Command("IT8951/IT8951", "0", "0", path)
+	return cmd.Run()
+}
+
 func screenshotAndDisplay(ctx context.Context, url string) error {
 	// First for debugging purposes get the first bit of text from the URL
 	resp, err := http.Get(url)
@@ -56,9 +63,7 @@ func screenshotAndDisplay(ctx context.Context, url string) error {
 	}
 	file.Close()
 
-	// Now run the external command to display the image on the eink screen
-	cmd := exec.Command("IT8951/IT8951", "0", "0", "screenshot.bmp")
-	return cmd.Run()
+	return displayBmp("screenshot.bmp")
 }
 
 func fixedSizeScreenshot(urlstr string, res *[]byte) chromedp.Tasks {
