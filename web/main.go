@@ -77,6 +77,16 @@ func fixedSizeScreenshot(urlstr string, res *[]byte) chromedp.Tasks {
 }
 
 func main() {
+	// First things first. Show a picture of Finn to show
+	// that we're starting up.
+	log.Println("Showing startup image...")
+	err := displayBmp("finn.bmp")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Sleeping for thirty seconds...")
+	time.Sleep(30 * time.Second)
+
 	url := os.Getenv("URL")
 	// create context
 	ctx, cancel := chromedp.NewContext(context.Background())
