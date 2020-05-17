@@ -5,7 +5,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"image/png"
 	"io/ioutil"
 	"log"
