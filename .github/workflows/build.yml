@@ -33,11 +33,3 @@ jobs:
             -t mlandauer/eink-driver:$GITHUB_SHA \
             --push \
             .
-      - name: Deploy
-        run: |
-          wget https://downloads.deviceplane.com/cli/latest/linux/amd64/deviceplane
-          chmod +x deviceplane
-          ./deviceplane deploy eink-driver deviceplane.yml
-        env:
-          DEVICEPLANE_ACCESS_KEY: ${{ secrets.DEVICEPLANE_ACCESS_KEY }}
-          DEVICEPLANE_PROJECT: matthew-home
