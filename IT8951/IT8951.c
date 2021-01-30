@@ -265,7 +265,7 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 {
 	uint32_t i,j;
 	//Source buffer address of Host
-	uint16_t* pusFrameBuf = (uint16_t*)pstLdImgInfo->ulStartFBAddr;
+	uint16_t* pusFrameBuf = pstLdImgInfo->ulStartFBAddr;
 
 	//Set Image buffer(IT8951) Base address
 	IT8951SetImgBufBaseAddr(pstLdImgInfo->ulImgBufBaseAddr);
@@ -373,7 +373,7 @@ void IT8951_BMP_Example(uint32_t x, uint32_t y,char *path)
 	IT8951WaitForDisplayReady();
 
 	//Setting Load image information
-	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
+	stLdImgInfo.ulStartFBAddr    = gpFrameBuf;
 	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
 	stLdImgInfo.usPixelFormat    = IT8951_8BPP;
 	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
