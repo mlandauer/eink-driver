@@ -38,9 +38,6 @@ func screenshotAndDisplay(ctx context.Context, url string) error {
 
 	var buf []byte
 	// Capture screenshot of a page at a particular browser size
-	// Note we can't use multicast DNS to use the nice name solar.local because
-	// it doesn't work inside a docker container. So, using a hardcoded IP for the time
-	// being. This IP at least is made to be static on the dhcp server (router)
 	if err := chromedp.Run(ctx, fixedSizeScreenshot(url, &buf)); err != nil {
 		return err
 	}
