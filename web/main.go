@@ -24,7 +24,7 @@ func displayBmp(path string) error {
 	return cmd.Run()
 }
 
-func screenshotAndDisplay(ctx context.Context, url string) error {
+func screenshot(ctx context.Context, url string, path string) error {
 	// First for debugging purposes get the first bit of text from the URL
 	resp, err := http.Get(url)
 	if err != nil {
@@ -48,7 +48,7 @@ func screenshotAndDisplay(ctx context.Context, url string) error {
 		return err
 	}
 	// Create a file for writing
-	file, err := os.Create("screenshot.bmp")
+	file, err := os.Create(path)
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,14 @@ func screenshotAndDisplay(ctx context.Context, url string) error {
 		return err
 	}
 	file.Close()
+	return nil
+}
 
+func screenshotAndDisplay(ctx context.Context, url string) error {
+	err := screenshot(ctx, url, "screenshot.bmp")
+	if err != nil {
+		return err
+	}
 	return displayBmp("screenshot.bmp")
 }
 
