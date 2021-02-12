@@ -90,12 +90,22 @@ func main() {
 	time.Sleep(30 * time.Second)
 
 	url := os.Getenv("URL")
+	tz := os.Getenv("TZ")
+
+	// Set timezone of the browser
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Env("TZ="+tz),
+	)
+
+	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
+
 	// create context
-	ctx, cancel := chromedp.NewContext(context.Background())
+	ctx, cancel := chromedp.NewContext(allocCtx)
 	defer cancel()
 
 	for {
-		err := screenshotAndDisplay(ctx, url)
+		err = screenshotAndDisplay(ctx, url)
 		if err != nil {
 			log.Fatal(err)
 		}
