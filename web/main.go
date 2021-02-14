@@ -20,7 +20,14 @@ import (
 // path is relative to the eink-driver directory. Must be
 // an 800x600 bmp image
 func displayBmp(path string) error {
-	cmd := exec.Command("IT8951/IT8951", "0", "0", path)
+	// If the command doesn't complete in 10 seconds it will get killed
+	// This is a workaround for seeing the IT8951 occasionaly hanging
+	// using 100% cpu. Obviously it would be good to figure out why this
+	// is actually happening
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "IT8951/IT8951", "0", "0", path)
 	return cmd.Run()
 }
 
