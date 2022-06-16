@@ -1,6 +1,6 @@
 module github.com/mlandauer/eink-driver/web
 
-go 1.13
+go 1.18
 
 require (
 	github.com/chromedp/cdproto v0.0.0-20200209033844-7e00b02ea7d2 // indirect
