@@ -5,33 +5,47 @@ package main
 import (
 	"bytes"
 	"context"
-	"image/png"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
-	"os/exec"
 	"time"
 
 	"github.com/chromedp/chromedp"
-	"golang.org/x/image/bmp"
 )
 
-// path is relative to the eink-driver directory. Must be
-// an 800x600 bmp image
-func displayBmp(path string) error {
-	// If the command doesn't complete in 10 seconds it will get killed
-	// This is a workaround for seeing the IT8951 occasionaly hanging
-	// using 100% cpu. Obviously it would be good to figure out why this
-	// is actually happening
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	cmd := exec.CommandContext(ctx, "IT8951/IT8951", "0", "0", path)
-	return cmd.Run()
+// Image must be PNG 800x600
+func displayImage(reader io.Reader) error {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile("file", "image.png")
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(part, reader)
+	if err != nil {
+		return err
+	}
+	writer.Close()
+	// TODO: Make the URL below configurable
+	response, err := http.Post("http://eink-web-api:8080/image", writer.FormDataContentType(), body)
+	if err != nil {
+		return err
+	}
+	if response.StatusCode != http.StatusOK {
+		b, err := io.ReadAll(response.Body)
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf("unexpected response from eink web api service: %s", string(b))
+	}
+	return err
 }
 
-func screenshot(ctx context.Context, url string, path string) error {
+func screenshotAndDisplay(ctx context.Context, url string) error {
 	// First for debugging purposes get the first bit of text from the URL
 	resp, err := http.Get(url)
 	if err != nil {
@@ -48,31 +62,8 @@ func screenshot(ctx context.Context, url string, path string) error {
 	if err := chromedp.Run(ctx, fixedSizeScreenshot(url, &buf)); err != nil {
 		return err
 	}
-	// Convert from png to bmp
 	reader := bytes.NewReader(buf)
-	image, err := png.Decode(reader)
-	if err != nil {
-		return err
-	}
-	// Create a file for writing
-	file, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	err = bmp.Encode(file, image)
-	if err != nil {
-		return err
-	}
-	file.Close()
-	return nil
-}
-
-func screenshotAndDisplay(ctx context.Context, url string) error {
-	err := screenshot(ctx, url, "screenshot.bmp")
-	if err != nil {
-		return err
-	}
-	return displayBmp("screenshot.bmp")
+	return displayImage(reader)
 }
 
 func fixedSizeScreenshot(urlstr string, res *[]byte) chromedp.Tasks {
@@ -89,10 +80,16 @@ func main() {
 	// First things first. Show a picture of Finn to show
 	// that we're starting up.
 	log.Println("Showing startup image...")
-	err := displayBmp("finn.bmp")
+	file, err := os.Open("finn.png")
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = displayImage(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
 	log.Println("Sleeping for thirty seconds...")
 	time.Sleep(30 * time.Second)
 
